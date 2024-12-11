@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>음식 추가</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232196F3' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 9.36-7 10.6-3.6-1.24-7-5.77-7-10.6V6.3l7-3.12zm-1 12.64l-4-4 1.41-1.41L11 13l6.29-6.29L18.7 8.12l-7.7 7.7z'/></svg>"
+    />
+    <link rel="stylesheet" href="/css/create_food.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">관리자 페이지</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${username + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <ul class="nav-links">
+        <form action="/" method="GET">
+          <button type="submit" class="nav-button">
+            <i class="material-icons">arrow_back</i>
+            <span>돌아가기</span>
+          </button>
+        </form>
+      </ul>
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1>
+          <i class="material-icons">restaurant_menu</i>
+          새로운 음식 등록
+        </h1>
+      </div>
+
+      <div class="form-container">
+        <form
+          id="createFoodForm"
+          class="create-form"
+          method="POST"
+          action="/create/food"
+        >
+          <div id="errorMessage" class="error-message hidden">
+            <i class="material-icons">error</i>
+            <span></span>
+          </div>
+
+          <div class="form-layout">
+            <!-- 영양 정보 섹션 -->
+            <div class="nutrition-section">
+              <div class="form-group">
+                <label for="name">
+                  <i class="material-icons">restaurant</i>
+                  음식 이름
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="음식 이름을 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="servingSize">
+                  <i class="material-icons">kitchen</i>
+                  1회 제공량
+                </label>
+                <input
+                  type="text"
+                  id="servingSize"
+                  name="servingSize"
+                  required
+                  placeholder="ex) 100g"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="energy">
+                  <i class="material-icons">local_fire_department</i>
+                  열량 (kcal)
+                </label>
+                <input
+                  type="number"
+                  id="energy"
+                  name="energy"
+                  required
+                  placeholder="열량을 입력하세요"
+                  step="0.1"
+                />
+              </div>
+            </div>
+
+            <!-- 상세 영양소 섹션 -->
+            <div class="details-section">
+              <div class="nutrition-grid">
+                <div class="form-group">
+                  <label for="carbohydrate">
+                    <i class="material-icons">bakery_dining</i>
+                    탄수화물 (g)
+                  </label>
+                  <input
+                    type="number"
+                    id="carbohydrate"
+                    name="carbohydrate"
+                    required
+                    placeholder="탄수화물"
+                    step="0.1"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="protein">
+                    <i class="material-icons">egg</i>
+                    단백질 (g)
+                  </label>
+                  <input
+                    type="number"
+                    id="protein"
+                    name="protein"
+                    required
+                    placeholder="단백질"
+                    step="0.1"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="fat">
+                    <i class="material-icons">water_drop</i>
+                    지방 (g)
+                  </label>
+                  <input
+                    type="number"
+                    id="fat"
+                    name="fat"
+                    required
+                    placeholder="지방"
+                    step="0.1"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="sugars">
+                    <i class="material-icons">icecream</i>
+                    당류 (g)
+                  </label>
+                  <input
+                    type="number"
+                    id="sugars"
+                    name="sugars"
+                    required
+                    placeholder="당류"
+                    step="0.1"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="cholesterol">
+                    <i class="material-icons">favorite</i>
+                    콜레스테롤 (mg)
+                  </label>
+                  <input
+                    type="number"
+                    id="cholesterol"
+                    name="cholesterol"
+                    required
+                    placeholder="콜레스테롤"
+                    step="0.1"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="transFat">
+                    <i class="material-icons">warning</i>
+                    트랜스지방 (g)
+                  </label>
+                  <input
+                    type="number"
+                    id="transFat"
+                    name="transFat"
+                    required
+                    placeholder="트랜스지방"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="material-icons">save</i>
+              <span>등록하기</span>
+            </button>
+            <a href="/" class="btn btn-secondary">
+              <i class="material-icons">close</i>
+              <span>취소</span>
+            </a>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>물건 추가</title>
+    <link rel="stylesheet" href="/css/create_item.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">관리자 페이지</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${username + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <ul class="nav-links">
+        <form action="/" method="GET">
+          <button type="submit" class="nav-button">
+            <i class="material-icons">arrow_back</i>
+            <span>돌아가기</span>
+          </button>
+        </form>
+      </ul>
+
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1>
+          <i class="material-icons">add_circle</i>
+          새로운 물건 등록
+        </h1>
+      </div>
+
+      <div class="form-container">
+        <form
+          id="createItemForm"
+          class="create-form"
+          enctype="multipart/form-data"
+          method="POST"
+          action="/create/item"
+        >
+          <!-- 에러 메시지 표시 영역 추가 -->
+          <div id="errorMessage" class="error-message hidden">
+            <i class="material-icons">error</i>
+            <span></span>
+          </div>
+
+          <div class="form-layout">
+            <!-- 이미지 업로드 섹션 -->
+            <div class="image-section">
+              <div class="image-preview" id="imagePreview">
+                <i class="material-icons">add_photo_alternate</i>
+                <span>이미지 URL을 입력하세요</span>
+              </div>
+              <div class="form-group">
+                <label for="img">
+                  <i class="material-icons">link</i>
+                  이미지 URL
+                </label>
+                <input
+                  type="url"
+                  id="img"
+                  name="img"
+                  required
+                  placeholder="이미지 URL을 입력하세요"
+                  onchange="previewImage(this)"
+                />
+              </div>
+            </div>
+
+            <!-- 상품 정보 섹션 -->
+            <div class="info-section">
+              <div class="form-group">
+                <label for="name">
+                  <i class="material-icons">inventory_2</i>
+                  물건 이름
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="물건 이름을 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="price">
+                  <i class="material-icons">payments</i>
+                  가격
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  required
+                  placeholder="가격을 입력하세요"
+                  min="0"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="description">
+                  <i class="material-icons">description</i>
+                  상세 설명
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="6"
+                  required
+                  placeholder="물건에 대한 상세한 설명을 입력하세요"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="material-icons">save</i>
+              <span>등록하기</span>
+            </button>
+            <a href="/" class="btn btn-secondary">
+              <i class="material-icons">close</i>
+              <span>취소</span>
+            </a>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <script src="/js/create_item.js"></script>
+    <script>
+      function previewImage(input) {
+        const preview = document.getElementById("imagePreview");
+        const url = input.value;
+
+        if (url) {
+          preview.innerHTML = `<img src="${url}" alt="Preview" class="preview-img" onerror="handleImageError(this)"/>`;
+          preview.classList.add("has-image");
+        } else {
+          preview.innerHTML = `
+            <i class="material-icons">add_photo_alternate</i>
+            <span>이미지 URL을 입력하세요</span>
+          `;
+          preview.classList.remove("has-image");
+        }
+      }
+
+      function handleImageError(img) {
+        img.parentElement.innerHTML = `
+          <i class="material-icons">error</i>
+          <span>이미지를 불러올 수 없습니다</span>
+        `;
+      }
+    </script>
+  </body>
+</html>

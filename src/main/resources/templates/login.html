@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리자 로그인</title>
+    <link rel="stylesheet" href="css/login.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232196F3' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 9.36-7 10.6-3.6-1.24-7-5.77-7-10.6V6.3l7-3.12zm-1 12.64l-4-4 1.41-1.41L11 13l6.29-6.29L18.7 8.12l-7.7 7.7z'/></svg>"
+    />
+  </head>
+  <body class="login-page">
+    <div class="alert-container">
+      <div th:if="${errorMessage}" class="alert alert-danger fade-in">
+        <i class="material-icons">error</i>
+        <p th:text="${errorMessage}"></p>
+      </div>
+      <div th:if="${successMessage}" class="alert alert-success fade-in">
+        <i class="material-icons">check_circle</i>
+        <p th:text="${successMessage}"></p>
+      </div>
+    </div>
+    <div class="login-container">
+      <div class="login-box">
+        <div class="login-header">
+          <i class="material-icons logo-icon">admin_panel_settings</i>
+          <h1>Admin Login</h1>
+        </div>
+        <form action="/login" method="POST" class="login-form">
+          <div class="input-group">
+            <i class="material-icons">person</i>
+            <input
+              type="text"
+              name="username"
+              placeholder="관리자 아이디"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <i class="material-icons">lock</i>
+            <input
+              type="password"
+              name="password"
+              placeholder="비밀번호"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary login-btn">
+            <i class="material-icons">login</i>
+            <span>로그인</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

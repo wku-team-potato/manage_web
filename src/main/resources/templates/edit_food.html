@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>음식 정보 수정</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/edit_food.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">관리자 페이지</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${username + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <ul class="nav-links">
+        <form action="javascript:history.back()" method="GET">
+          <button type="submit" class="nav-button">
+            <i class="material-icons">arrow_back</i>
+            <span>돌아가기</span>
+          </button>
+        </form>
+      </ul>
+
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1><i class="material-icons">edit</i>음식 정보 수정</h1>
+      </div>
+
+      <div class="comparison-container">
+        <!-- 원본 데이터 카드 -->
+        <div class="card original-card">
+          <h2>
+            <i class="material-icons">restaurant_menu</i>
+            <span>원본 정보</span>
+          </h2>
+          <div class="food-details">
+            <div class="info-item serving-info">
+              <i class="material-icons">kitchen</i>
+              <span>1회 제공량</span>
+              <strong th:text="${food.servingSize}">제공량</strong>
+            </div>
+            <div class="info-item energy">
+              <i class="material-icons">local_fire_department</i>
+              <span>열량</span>
+              <strong
+                th:text="${#numbers.formatDecimal(food.energy, 1, 2) + ' kcal'}"
+                >0 kcal</strong
+              >
+            </div>
+            <div class="nutrition-grid">
+              <div class="info-item">
+                <i class="material-icons">bakery_dining</i>
+                <span>탄수화물</span>
+                <strong
+                  th:text="${#numbers.formatDecimal(food.carbohydrate, 1, 2) + ' g'}"
+                  >0 g</strong
+                >
+              </div>
+              <div class="info-item">
+                <i class="material-icons">egg</i>
+                <span>단백질</span>
+                <strong
+                  th:text="${#numbers.formatDecimal(food.protein, 1, 2) + ' g'}"
+                  >0 g</strong
+                >
+              </div>
+              <div class="info-item">
+                <i class="material-icons">water_drop</i>
+                <span>지방</span>
+                <strong
+                  th:text="${#numbers.formatDecimal(food.fat, 1, 2) + ' g'}"
+                  >0 g</strong
+                >
+              </div>
+              <div class="info-item">
+                <i class="material-icons">icecream</i>
+                <span>당류</span>
+                <strong
+                  th:text="${#numbers.formatDecimal(food.sugars, 1, 2) + ' g'}"
+                  >0 g</strong
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 수정 폼 카드 -->
+        <div class="card edit-card">
+          <h2>
+            <i class="material-icons">edit_note</i>
+            <span>수정할 정보</span>
+          </h2>
+          <form
+            class="edit-form"
+            th:action="@{/edit/food/{id}(id=${food.id})}"
+            method="POST"
+          >
+            <div class="food-details">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">restaurant</i>
+                    <span>음식명</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    th:value="${food.name}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">kitchen</i>
+                    <span>1회 제공량</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="servingSize"
+                    th:value="${#numbers.formatDecimal(food.servingSize, 1, 2)}"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">local_fire_department</i>
+                    <span>열량 (kcal)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="energy"
+                    th:value="${#numbers.formatDecimal(food.energy, 1, 2)}"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="nutrition-grid">
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">bakery_dining</i>
+                    <span>탄수화물 (g)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="carbohydrate"
+                    th:value="${#numbers.formatDecimal(food.carbohydrate, 1, 2)}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">egg</i>
+                    <span>단백질 (g)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="protein"
+                    th:value="${#numbers.formatDecimal(food.protein, 1, 2)}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">water_drop</i>
+                    <span>지방 (g)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="fat"
+                    th:value="${#numbers.formatDecimal(food.fat, 1, 2)}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">icecream</i>
+                    <span>당류 (g)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="sugars"
+                    th:value="${#numbers.formatDecimal(food.sugars, 1, 2)}"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">favorite</i>
+                    <span>콜레스테롤 (mg)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="cholesterol"
+                    th:value="${#numbers.formatDecimal(food.cholesterol, 1, 2)}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="material-icons">warning</i>
+                    <span>트랜스지방 (g)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="transFat"
+                    th:value="${#numbers.formatDecimal(food.transFat, 1, 2)}"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="material-icons">save</i>
+                저장하기
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="history.back()"
+              >
+                <i class="material-icons">close</i>
+                취소하기
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

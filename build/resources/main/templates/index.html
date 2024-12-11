@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리자 페이지</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232196F3' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 9.36-7 10.6-3.6-1.24-7-5.77-7-10.6V6.3l7-3.12zm-1 12.64l-4-4 1.41-1.41L11 13l6.29-6.29L18.7 8.12l-7.7 7.7z'/></svg>"
+    />
+    <link rel="stylesheet" href="css/index.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">Admin Panel</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${authuser + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <!-- nav-links 부분 수정 -->
+      <ul class="nav-links">
+        <li
+          th:if="${userRole == 4 || userRole == 3}"
+          th:class="${activeTab == 'members' ? 'active' : ''}"
+          data-page="members"
+        >
+          <i class="material-icons">supervisor_account</i>
+          <span>회원 관리</span>
+        </li>
+        <li
+          th:if="${userRole == 4 || userRole == 2}"
+          th:class="${activeTab == 'products' ? 'active' : ''}"
+          data-page="products"
+        >
+          <i class="material-icons">inventory_2</i>
+          <span>물건 관리</span>
+        </li>
+        <li
+          th:if="${userRole == 4 || userRole == 1}"
+          th:class="${activeTab == 'foods' ? 'active' : ''}"
+          data-page="foods"
+        >
+          <i class="material-icons">restaurant_menu</i>
+          <span>음식 관리</span>
+        </li>
+      </ul>
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main>
+      <div class="alert-container">
+        <div th:if="${errorMessage}" class="alert alert-danger fade-in">
+          <i class="material-icons">error</i>
+          <p th:text="${errorMessage}"></p>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success fade-in">
+          <i class="material-icons">check_circle</i>
+          <p th:text="${successMessage}"></p>
+        </div>
+      </div>
+      <!-- 페이지 div들도 수정 -->
+      <div
+        class="page"
+        id="members-page"
+        th:classappend="${activeTab != 'members' ? 'hidden' : ''}"
+      >
+        <div class="page-header">
+          <div class="header-title">
+            <h1><i class="material-icons">group</i>회원 관리</h1>
+          </div>
+          <div class="search-bar">
+            <i class="material-icons">search</i>
+            <input type="text" placeholder="회원 검색..." />
+          </div>
+        </div>
+        <div class="cards-container">
+          <!-- 회원 카드 템플릿 -->
+          <div class="card member-card" th:each="profile : ${profile}">
+            <div class="card-content-wrapper">
+              <i class="material-icons profile-icon">person</i>
+              <h3 th:text="${profile.username}">홍길동</h3>
+              <p
+                class="join-date"
+                th:switch="${profile?.authUser?.isSuperuser}"
+              >
+                <span th:case="4">최고 관리자</span>
+                <span th:case="3">회원 관리자</span>
+                <span th:case="2">물건 관리자</span>
+                <span th:case="1">음식 관리자</span>
+                <span th:case="0">일반 사용자</span>
+                <span th:case="*">알 수 없음</span>
+              </p>
+              <p
+                class="join-date"
+                th:text="${#temporals.format(profile.createdAt, 'yyyy-MM-dd')}"
+              >
+                가입일: 2024-01-01
+              </p>
+            </div>
+            <div class="actions">
+              <a
+                th:href="@{/detail/user/{id}(id=${profile.userid})}"
+                class="btn btn-primary"
+              >
+                <span>상세보기</span>
+              </a>
+              <!-- 본인이 아닐 경우에만 삭제 버튼 표시 -->
+              <form
+                th:if="${profile.username != authuser && 
+                       ((userRole == 4) || 
+                        (profile?.authUser?.isSuperuser <= userRole))}"
+                th:action="@{/user/delete/{id}(id=${profile.userid})}"
+                method="POST"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-danger delete-user"
+                  th:data-id="${profile.username}"
+                >
+                  <span>삭제</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="page"
+        id="products-page"
+        th:classappend="${activeTab != 'products' ? 'hidden' : ''}"
+      >
+        <div class="page-header">
+          <div class="header-title">
+            <h1><i class="material-icons">inventory</i>물건 관리</h1>
+            <form action="/create/item" method="GET">
+              <button type="submit" class="add-item-btn">
+                <i class="material-icons">add_circle</i>
+                <span>물건 추가</span>
+              </button>
+            </form>
+          </div>
+          <div class="search-bar">
+            <i class="material-icons">search</i>
+            <input type="text" placeholder="물건 검색..." />
+          </div>
+        </div>
+        <div class="cards-container">
+          <!-- 물건 카드 템플릿 -->
+          <div class="card product-card" th:each="item : ${item}">
+            <div class="card-content-wrapper">
+              <img
+                th:if="${item.img != null and !item.img.isEmpty()}"
+                th:src="${item.img}"
+                class="product-image"
+                th:alt="${item.name}"
+              />
+              <i
+                th:if="${item.img == null or item.img.isEmpty()}"
+                class="material-icons product-icon"
+                >shopping_bag</i
+              >
+              <h3 th:text="${item.name}">노트북</h3>
+              <p
+                class="price"
+                th:text="${#numbers.formatDecimal(item.price, 0, 0) + ' 원'}"
+              >
+                ₩1,500,000
+              </p>
+            </div>
+            <div class="actions">
+              <a
+                th:href="@{/detail/item/{id}(id=${item.id})}"
+                class="btn btn-primary"
+              >
+                <span>상세보기</span>
+              </a>
+              <form
+                th:action="@{/item/delete/{id}(id=${item.id})}"
+                method="POST"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-danger delete-item"
+                  th:data-id="${item.name}"
+                >
+                  <span>삭제</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 음식 관리 페이지 -->
+      <div
+        class="page"
+        id="foods-page"
+        th:classappend="${activeTab != 'foods' ? 'hidden' : ''}"
+      >
+        <div class="page-header">
+          <div class="header-title">
+            <h1><i class="material-icons">restaurant</i>음식 관리</h1>
+            <form action="/create/food" method="GET">
+              <button type="submit" class="add-item-btn">
+                <i class="material-icons">add_circle</i>
+                <span>음식 추가</span>
+              </button>
+            </form>
+          </div>
+          <div class="search-bar">
+            <i class="material-icons">search</i>
+            <input type="text" placeholder="음식 검색..." />
+          </div>
+        </div>
+
+        <!-- 음식 테이블 부분 수정 -->
+        <div class="table-wrapper">
+          <div class="table-container">
+            <table class="food-table">
+              <thead>
+                <tr>
+                  <th class="sticky-header">음식명</th>
+                  <th class="sticky-header text-center">
+                    열량<small>kcal</small>
+                  </th>
+                  <th class="sticky-header text-center">
+                    탄수화물<small>g</small>
+                  </th>
+                  <th class="sticky-header text-center">
+                    단백질<small>g</small>
+                  </th>
+                  <th class="sticky-header text-center">
+                    지방<small>g</small>
+                  </th>
+                  <th class="sticky-header text-center sticky-action">액션</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="food : ${food}">
+                  <td class="food-name" th:text="${food.name}">음식명</td>
+                  <td
+                    th:text="${#numbers.formatDecimal(food.energy, 1, 2)}"
+                    class="text-center nutrition-value"
+                  >
+                    100
+                  </td>
+                  <td
+                    th:text="${#numbers.formatDecimal(food.carbohydrate, 1, 2)}"
+                    class="text-center nutrition-value"
+                  >
+                    10
+                  </td>
+                  <td
+                    th:text="${#numbers.formatDecimal(food.protein, 1, 2)}"
+                    class="text-center nutrition-value"
+                  >
+                    5
+                  </td>
+                  <td
+                    th:text="${#numbers.formatDecimal(food.fat, 1, 2)}"
+                    class="text-center nutrition-value"
+                  >
+                    3
+                  </td>
+                  <td class="action-buttons">
+                    <div class="action-buttons-wrapper">
+                      <a
+                        th:href="@{/detail/food/{id}(id=${food.id})}"
+                        class="btn btn-primary btn-sm"
+                      >
+                        <i class="material-icons">visibility</i>
+                      </a>
+                      <!-- 음식 테이블의 삭제 버튼 부분 수정 -->
+                      <form
+                        th:action="@{/food/delete/{id}(id=${food.id})}"
+                        method="POST"
+                        style="display: inline"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-danger btn-sm delete-food"
+                          th:data-id="${food.id}"
+                          th:data-name="${food.name}"
+                          onclick="showDeleteModal(this)"
+                        >
+                          <i class="material-icons">delete</i>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <div class="rows-per-page">
+              <span>페이지당 행:</span>
+              <select id="rowsPerPage">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <div id="pagination" class="pagination">
+              <!-- 페이지네이션 버튼들이 여기에 동적으로 추가됨 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 삭제 확인 모달 -->
+    <div id="deleteModal" class="modal hidden">
+      <div class="modal-content">
+        <i class="material-icons warning-icon">warning</i>
+        <h2>삭제 확인</h2>
+        <p id="deleteTargetName" class="delete-target-text"></p>
+        <p>정말로 삭제하시겠습니까?</p>
+        <div class="modal-actions">
+          <button id="confirmDelete" class="btn btn-danger">
+            <i class="material-icons">delete_forever</i>
+            <span>삭제</span>
+          </button>
+          <button id="cancelDelete" class="btn btn-secondary">
+            <i class="material-icons">close</i>
+            <span>취소</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart.js 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/script.js"></script>
+    <!-- 페이지 하단에 스크립트 추가 -->
+    <script>
+      function showDeleteModal(button) {
+        const modal = document.getElementById("deleteModal");
+        const deleteTargetName = document.getElementById("deleteTargetName");
+        const confirmDelete = document.getElementById("confirmDelete");
+        const cancelDelete = document.getElementById("cancelDelete");
+        const form = button.closest("form");
+
+        deleteTargetName.textContent = `"${button.getAttribute(
+          "data-name"
+        )}" 을(를)`;
+        modal.classList.remove("hidden");
+
+        confirmDelete.onclick = function () {
+          form.submit();
+        };
+
+        cancelDelete.onclick = function () {
+          modal.classList.add("hidden");
+        };
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+
+/* 기본 스타일 상속 */
+@import 'index.css';
+
+/* create_item.css의 공통 스타일 상속 */
+@import 'create_item.css';
+
+/* 음식 등록 폼 특화 스타일 */
+.nutrition-section {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-layout {
+    grid-template-columns: 350px 1fr;
+}
+
+/* 입력 필드 특화 스타일 */
+.form-group input[type="number"] {
+    padding-right: 10px;
+}
+
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+/* 영양소 아이콘 색상 */
+.form-group label i {
+    font-size: 20px;
+}
+
+label[for="carbohydrate"] i { color: #FF9800; }
+label[for="protein"] i { color: #4CAF50; }
+label[for="fat"] i { color: #2196F3; }
+label[for="sugars"] i { color: #E91E63; }
+label[for="cholesterol"] i { color: #F44336; }
+label[for="transFat"] i { color: #9C27B0; }
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .form-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .nutrition-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .nutrition-grid {
+        grid-template-columns: 1fr;
+    }
+}

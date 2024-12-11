@@ -1,0 +1,774 @@
+/* 전역 스타일 상속 */
+@import 'index.css';
+
+/* 카드 컨테이너 레이아웃 수정 */
+.cards-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* 카드 공통 스타일 */
+.card {
+    height: auto;
+    min-height: 400px;
+    padding: 25px;
+    transition: var(--transition);
+}
+
+/* 프로필 카드 */
+.member-card {
+    grid-column: span 1;
+    text-align: center;
+    padding: 30px;
+}
+
+.member-card .profile-icon {
+    font-size: 80px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.profile-icon {
+    font-size: 80px !important;
+    color: var(--primary-color);
+    margin: 20px 0;
+    opacity: 0.9;
+}
+
+.member-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: var(--text-color);
+}
+
+/* 정보 그리드 레이아웃 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px;
+    background: var(--primary-light);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.info-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.15);
+}
+
+.info-item i {
+    font-size: 28px;
+    color: var(--primary-color);
+}
+
+.info-item span {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.info-item strong {
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+/* 측정 정보 카드 */
+.stats-card {
+    grid-column: span 1;
+    padding: 25px;
+    background: linear-gradient(145deg, var(--secondary-color), var(--primary-light));
+    border: 1px solid rgba(33, 150, 243, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.stats-card h2 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.measurement-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-item.measurement {
+    padding: 20px;
+    background: var(--secondary-color);
+    border: 1px solid rgba(33, 150, 243, 0.1);
+}
+
+.info-item.measurement h3 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* 주요 측정값 스타일 */
+.measurement-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: var(--secondary-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.measurement-value {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: var(--primary-light);
+    transition: var(--transition);
+}
+
+.measurement-value:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+}
+
+.measurement-value i {
+    font-size: 40px;
+    color: var(--primary-color);
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+}
+
+.value-info {
+    flex: 1;
+}
+
+.value-info .label {
+    font-size: 0.9rem;
+    color: #666;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.value-info strong {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.change-indicator {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.change-indicator.positive {
+    color: #4CAF50;
+}
+
+.change-indicator.negative {
+    color: var(--danger-color);
+}
+
+/* 측정 날짜 정보 스타일 */
+.measurement-dates {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.date-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px;
+    background: var(--secondary-color);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.date-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.15);
+}
+
+.date-item i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.date-item span {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.date-item strong {
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+/* 현재 측정값 스타일 */
+.measurement-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.measurement-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.measurement-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.15);
+}
+
+/* 변화량 정보 스타일 */
+.change-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.change-item {
+    padding: 15px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.change-item.first-date {
+    grid-column: span 2;
+}
+
+.change-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.change-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+
+.change-value small {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.change-value.positive {
+    color: #4CAF50;
+}
+
+.change-value.negative {
+    color: var(--danger-color);
+}
+
+/* 차트 카드 */
+.chart-card {
+    grid-column: span 2;
+    padding: 30px;
+    background: linear-gradient(145deg, var(--secondary-color), var(--primary-light));
+}
+
+.chart-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    height: calc(100% - 60px);
+    margin-top: 20px;
+    background: var(--secondary-color);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    height: calc(100% - 80px);
+    position: relative;
+    animation: chartFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes chartFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 데이터 없음 표시 */
+.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 60px);
+    padding: 30px;
+    background: var(--primary-light);
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.no-data i {
+    font-size: 48px;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    opacity: 0.7;
+}
+
+.no-data p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* 콘텐츠 헤더 */
+.content-header {
+    margin-bottom: 30px;
+}
+
+.content-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 2rem;
+    color: var(--text-color);
+}
+
+.content-header h1 i {
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+/* 버튼 스타일 통일 */
+/*
+.nav-button {
+    width: 100%;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.nav-button:hover {
+    background: var(--primary-light);
+    transform: translateX(5px);
+}
+
+.nav-button i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    color: var(--danger-color);
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    opacity: 0.8;
+}
+
+.logout-btn:hover {
+    background: var(--danger-color);
+    color: white;
+    opacity: 1;
+    transform: translateX(5px);
+}
+
+.logout-btn i {
+    font-size: 24px;
+}
+*/
+
+/* detail 페이지 특화 버튼 스타일만 추가 */
+.btn.btn-detail {
+    min-width: 120px;
+    padding: 10px 24px;
+}
+
+/* 애니메이션 스타일 통일 */
+.page {
+    animation: fadeIn 0.3s ease;
+}
+
+.card {
+    animation: cardFadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* 요소 호버 효과 개선 */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* .nav-button:hover, 
+.logout-btn:hover,
+.info-item:hover {
+    transition: var(--transition);
+} */
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card {
+        grid-column: span 1;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .measurement-grid,
+    .change-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .change-item.first-date {
+        grid-column: span 1;
+    }
+    
+    .measurement-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card {
+        min-height: 300px;
+    }
+
+    .measurement-dates {
+        grid-template-columns: 1fr;
+    }
+    
+    .measurement-value {
+        padding: 12px;
+    }
+    
+    .value-info strong {
+        font-size: 1.3rem;
+    }
+}
+
+/* 카드 공통 스타일 업데이트 */
+.card {
+    background: linear-gradient(145deg, var(--secondary-color), var(--primary-light));
+    border: 1px solid rgba(33, 150, 243, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    min-height: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* 카드 헤더 스타일 통일 */
+.card h2 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+/* 프로필 카드 스타일 업데이트 */
+.member-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.member-card .profile-icon {
+    font-size: 90px;
+    padding: 20px;
+    background: var(--secondary-color);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+    margin: 10px 0 25px;
+}
+
+/* 회원 정보 그리드 컨테이너 업데이트 */
+.info-grid {
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* 정보 아이템 스타일 업데이트 */
+.info-item {
+    background: var(--primary-light);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.info-item i {
+    font-size: 32px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.1);
+}
+
+.info-item span {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.info-item strong {
+    font-size: 1.3rem;
+    color: var(--text-color);
+}
+
+/* 데이터 없음 표시 스타일 통합 */
+.no-data {
+    background: var(--secondary-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.no-data i {
+    font-size: 36px;
+    color: var(--primary-color);
+    opacity: 0.7;
+    background: var(--primary-light);
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.no-data p {
+    color: #666;
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* 특정 섹션별 no-data 스타일 변형 */
+.no-data.join-date {
+    background: var(--primary-light);
+}
+
+.no-data.join-date i {
+    background: var(--secondary-color);
+}
+
+/* 섹션 컨테이너 스타일 */
+.info-section {
+    width: 100%;
+}
+
+/* 가입일 정보 스타일 수정 */
+.join-date-info {
+    margin-top: 20px;
+    width: 100%;
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.join-date-info .measurement-value {
+    width: 100%;
+    margin: 0;
+    background: var(--primary-light);
+}
+
+.join-date-info .measurement-value i {
+    font-size: 32px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.1);
+}
+
+/* 역할 관리 스타일 */
+.role-management {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.role-management h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.role-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.role-select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
+    width: 100%;
+}
+
+.role-update-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+/* 반응형 디자인 수정 */
+@media (max-width: 768px) {
+    .measurement-grid,
+    .change-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .change-item.first-date {
+        grid-column: span 1;
+    }
+    
+    .measurement-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card {
+        min-height: 300px;
+    }
+
+    .measurement-dates {
+        grid-template-columns: 1fr;
+    }
+    
+    .measurement-value {
+        padding: 12px;
+    }
+    
+    .value-info strong {
+        font-size: 1.3rem;
+    }
+
+    .no-data {
+        padding: 15px;
+    }
+    
+    .no-data i {
+        font-size: 32px;
+    }
+    
+    .no-data p {
+        font-size: 0.9rem;
+    }
+}
+
+/* No permission message */
+.no-permission-message {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 0, 0, 0.1);
+    border-radius: 4px;
+    color: var(--danger-color);
+}
+
+.no-permission-message i {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+}
+
+.no-permission-message p {
+    margin: 0;
+    font-size: 0.9rem;
+}

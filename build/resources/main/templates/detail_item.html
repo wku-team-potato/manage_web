@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>물건 상세 정보</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/detail_item.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="alert-container">
+      <div th:if="${errorMessage}" class="alert alert-danger fade-in">
+        <i class="material-icons">error</i>
+        <p th:text="${errorMessage}"></p>
+      </div>
+      <div th:if="${successMessage}" class="alert alert-success fade-in">
+        <i class="material-icons">check_circle</i>
+        <p th:text="${successMessage}"></p>
+      </div>
+    </div>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">관리자 페이지</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${username + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <!-- 네비게이션 링크 -->
+      <ul class="nav-links">
+        <form action="/" method="GET">
+          <button type="submit" class="nav-button">
+            <i class="material-icons">arrow_back</i>
+            <span>돌아가기</span>
+          </button>
+        </form>
+        <form th:action="@{/edit/item/{id}(id=${item.id})}" method="GET">
+          <button type="submit" class="nav-button edit-button">
+            <i class="material-icons">edit</i>
+            <span>물품 수정</span>
+          </button>
+        </form>
+      </ul>
+
+      <!-- 로그아웃 버튼 -->
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1><i class="material-icons">inventory</i>물건 상세 정보</h1>
+      </div>
+
+      <div class="cards-container">
+        <!-- 물건 정보 카드 -->
+        <div class="card item-card">
+          <h2>
+            <i class="material-icons">shopping_bag</i>
+            <span th:text="${item.name}">물건명</span>
+          </h2>
+          <div class="item-details">
+            <div class="item-info-grid">
+              <div class="info-item image">
+                <i class="material-icons">image</i>
+                <span>물건 이미지</span>
+                <div class="image-preview">
+                  <img
+                    th:if="${item.img != null && !item.img.isEmpty()}"
+                    th:src="${item.img}"
+                    alt="물건 이미지"
+                    class="current-image"
+                  />
+                  <div
+                    th:if="${item.img == null || item.img.isEmpty()}"
+                    class="no-image"
+                  >
+                    <i class="material-icons">image_not_supported</i>
+                    <span>이미지 없음</span>
+                  </div>
+                </div>
+              </div>
+              <div class="price-date-container">
+                <div class="info-item price">
+                  <i class="material-icons">attach_money</i>
+                  <span>판매 가격</span>
+                  <strong
+                    th:text="${#numbers.formatDecimal(item.price, 0, 0) + ' 원'}"
+                    >0 원</strong
+                  >
+                </div>
+                <div class="info-item date">
+                  <i class="material-icons">event</i>
+                  <span>등록 일자</span>
+                  <strong
+                    th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd')}"
+                    >2024-01-01</strong
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="info-item description">
+              <div class="description-header">
+                <i class="material-icons">description</i>
+                <span>상세 설명</span>
+              </div>
+              <div class="description-content">
+                <p th:text="${item.description}">설명 없음</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 구매 통계 카드 수정 -->
+        <div class="card stats-card">
+          <h2>
+            <i class="material-icons">analytics</i>
+            날짜별 구매 통계
+          </h2>
+          <div class="chart-container">
+            <canvas id="purchaseChart"></canvas>
+          </div>
+        </div>
+
+        <!-- 구매 이력 카드 -->
+        <div class="card purchase-history-card">
+          <h2>
+            <i class="material-icons">people</i>
+            구매자 목록
+          </h2>
+          <div
+            class="purchase-list"
+            th:if="${not #lists.isEmpty(purchaseRecord)}"
+            id="purchaseList"
+          >
+            <!-- JavaScript로 동적 생성됨 -->
+          </div>
+          <div class="no-purchases" th:if="${#lists.isEmpty(purchaseRecord)}">
+            <i class="material-icons">info</i>
+            <p>아직 구매 이력이 없습니다.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script th:inline="javascript">
+      // 구매 기록 데이터 가져오기
+      const purchaseRecords = [[${purchaseRecord}]];
+
+      // 날짜별 구매량 계산
+      const purchasesByDate = {};
+
+      // 최근 7일 날짜 배열 생성
+      const dates = [];
+      for(let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        dates.push(dateStr);
+        purchasesByDate[dateStr] = 0;
+      }
+
+      // 구매 데이터 집계
+      purchaseRecords.forEach(record => {
+        const dateStr = record.createdAt.split('T')[0];
+        if(purchasesByDate.hasOwnProperty(dateStr)) {
+          purchasesByDate[dateStr]++;
+        }
+      });
+
+      // 차트 생성
+      const ctx = document.getElementById('purchaseChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates.map(date => date.substring(5)), // MM-DD 형식으로 표���
+          datasets: [{
+            label: '구매 건수',
+            data: dates.map(date => purchasesByDate[date]),
+            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+            borderColor: 'rgba(33, 150, 243, 1)',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true,
+            pointBackgroundColor: 'rgba(33, 150, 243, 1)',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: '최근 7일간 구매 현황',
+              font: {
+                size: 16
+              }
+            }
+          }
+        }
+      });
+
+      // 구매 기록 그룹화 처리
+      function groupPurchaseRecords(records) {
+        const grouped = {};
+
+        records.forEach(record => {
+          const dateStr = record.createdAt.split('T')[0];
+          const key = `${dateStr}_${record.user.id}`;
+
+          if (!grouped[key]) {
+            grouped[key] = {
+              user: record.user,
+              date: dateStr,
+              count: 0
+            };
+          }
+          grouped[key].count++;
+        });
+
+        return Object.values(grouped);
+      }
+
+      // 구매자 목록 렌더링
+      function renderPurchaseList(groupedRecords) {
+        const purchaseList = document.getElementById('purchaseList');
+        const sortedRecords = groupedRecords.sort((a, b) => b.date.localeCompare(a.date));
+
+        purchaseList.innerHTML = sortedRecords.map(record => `
+          <form action="/detail/user/${record.user.id}" method="GET">
+            <button type="submit" class="purchase-item-btn">
+              <i class="material-icons">account_circle</i>
+              <div class="user-info">
+                <span class="username">${record.user.username}</span>
+                <span class="user-id">ID: ${record.user.id}</span>
+              </div>
+              <div class="purchase-info">
+                <span class="purchase-count">${record.count}개</span>
+                <span class="purchase-date">${record.date}</span>
+              </div>
+            </button>
+          </form>
+        `).join('');
+      }
+
+      // 초기화
+      const groupedRecords = groupPurchaseRecords(purchaseRecords);
+      renderPurchaseList(groupedRecords);
+    </script>
+  </body>
+</html>

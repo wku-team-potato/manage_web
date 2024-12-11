@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>상세 정보</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/detail_user.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">관리자 페이지</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${username + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <!-- 네비게이션 링크 -->
+      <ul class="nav-links">
+        <form action="/" method="GET">
+          <button type="submit" class="nav-button">
+            <i class="material-icons">arrow_back</i>
+            <span>돌아가기</span>
+          </button>
+        </form>
+      </ul>
+
+      <!-- 로그아웃 버튼 위에 권한 관리 섹션 추가 -->
+      <div
+        class="role-management"
+        th:if="${(userRole == 4 || userRole == 3) && username != profile.username}"
+      >
+        <h3><i class="material-icons">admin_panel_settings</i>권한 관리</h3>
+        <!-- 현재 사용자의 권한이 target 사용자의 권한보다 높거나 같으면 권한 관리 폼을 보여주지 않음 -->
+        <th:block th:if="${user.isSuperuser >= userRole && userRole != 4}">
+          <div class="no-permission-message">
+            <i class="material-icons">lock</i>
+            <p>이 사용자의 권한을 수정할 수 없습니다.</p>
+          </div>
+        </th:block>
+        <form
+          th:if="${userRole == 4 || user.isSuperuser < userRole}"
+          th:action="@{/user/role/{id}(id=${profile.userid})}"
+          method="POST"
+          class="role-form"
+        >
+          <select
+            name="role"
+            class="role-select"
+            th:value="${user.isSuperuser}"
+          >
+            <!-- 모든 관리자가 부여 가능한 권한 -->
+            <option value="0" th:selected="${user.isSuperuser == 0}">
+              일반 사용자
+            </option>
+            <!-- 최고 관리자만 볼 수 있는 권한 옵션 -->
+            <th:block th:if="${userRole == 4}">
+              <option value="3" th:selected="${user.isSuperuser == 3}">
+                회원 관리자
+              </option>
+              <option value="2" th:selected="${user.isSuperuser == 2}">
+                물건 관리자
+              </option>
+              <option value="1" th:selected="${user.isSuperuser == 1}">
+                음식 관리자
+              </option>
+            </th:block>
+            <!-- 회원 관리자만 볼 수 있는 권한 옵션 -->
+            <th:block th:if="${userRole == 3}">
+              <option value="2" th:selected="${user.isSuperuser == 2}">
+                물건 관리자
+              </option>
+              <option value="1" th:selected="${user.isSuperuser == 1}">
+                음식 관리자
+              </option>
+            </th:block>
+          </select>
+          <button type="submit" class="btn btn-primary role-update-btn">
+            <i class="material-icons">save</i>
+            <span>권한 수정</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- 로그아웃 버튼 -->
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1><i class="material-icons">person</i>회원 상세 정보</h1>
+      </div>
+
+      <div class="cards-container">
+        <!-- 프로필 카드 -->
+        <div class="card member-card">
+          <i class="material-icons profile-icon">account_circle</i>
+          <h2 th:text="${profile.username}">사용자</h2>
+
+          <!-- 포인트/출석 정보 -->
+          <div
+            class="info-section"
+            th:if="${profile.totalPoints != null || profile.cumulativeAttendanceDays != null}"
+          >
+            <div class="info-grid">
+              <div class="info-item" th:if="${profile.totalPoints != null}">
+                <i class="material-icons">stars</i>
+                <span>포인트</span>
+                <strong th:text="${profile.totalPoints + ' P'}">0 P</strong>
+              </div>
+              <div
+                class="info-item"
+                th:if="${profile.cumulativeAttendanceDays != null}"
+              >
+                <i class="material-icons">calendar_today</i>
+                <span>출석일수</span>
+                <strong th:text="${profile.cumulativeAttendanceDays + ' 일'}"
+                  >0 일</strong
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="no-data"
+            th:if="${profile.totalPoints == null && profile.cumulativeAttendanceDays == null}"
+          >
+            <i class="material-icons">info</i>
+            <p>활동 정보가 없습니다.</p>
+          </div>
+
+          <!-- 가입일 정보 -->
+          <div class="join-date-info" th:if="${profile.createdAt != null}">
+            <div class="measurement-value">
+              <i class="material-icons">event</i>
+              <div class="value-info">
+                <span class="label">가입일</span>
+                <strong
+                  th:text="${#temporals.format(profile.createdAt, 'yyyy-MM-dd')}"
+                  >2024-01-01</strong
+                >
+              </div>
+            </div>
+          </div>
+          <div class="no-data join-date" th:if="${profile.createdAt == null}">
+            <i class="material-icons">event_busy</i>
+            <p>가입일 정보가 없습니다.</p>
+          </div>
+          <div
+            class="no-data"
+            th:if="${profile.totalPoints == null && profile.cumulativeAttendanceDays == null && profile.createdAt == null}"
+          >
+            <i class="material-icons">info</i>
+            <p>사용자 정보가 없습니다.</p>
+          </div>
+        </div>
+
+        <!-- 측정 정보 카드 -->
+        <div
+          class="card stats-card"
+          th:if="${not #lists.isEmpty(heightWeightRecord)}"
+          th:with="
+            latestRecord=${heightWeightRecord[heightWeightRecord.size() - 1]},
+            firstRecord=${heightWeightRecord[0]},
+            heightDiff=${latestRecord?.height != null && firstRecord?.height != null ? (latestRecord.height - firstRecord.height) : 0},
+            weightDiff=${latestRecord?.weight != null && firstRecord?.weight != null ? (latestRecord.weight - firstRecord.weight) : 0},
+            heightChange=${heightDiff != 0 && firstRecord?.height != null ? (heightDiff / firstRecord.height) * 100 : 0},
+            weightChange=${weightDiff != 0 && firstRecord?.weight != null ? (weightDiff / firstRecord.weight) * 100 : 0}
+          "
+        >
+          <h2>신체 측정 정보</h2>
+          <div class="measurement-info">
+            <!-- 주요 측정값 표시 -->
+            <div class="measurement-main">
+              <div class="measurement-value height">
+                <i class="material-icons">height</i>
+                <div class="value-info">
+                  <span class="label">현재 신장</span>
+                  <strong
+                    th:text="${latestRecord.height != null ? latestRecord.height + ' cm' : '정보 없음'}"
+                    >0 cm</strong
+                  >
+                  <div
+                    class="change-indicator"
+                    th:classappend="${heightDiff >= 0 ? 'positive' : 'negative'}"
+                  >
+                    <span
+                      th:text="${heightDiff != 0 ? #numbers.formatDecimal(heightDiff, 1, 1) + ' cm' : '변동 없음'}"
+                      >0 cm</span
+                    >
+                    <small
+                      th:text="'(' + ${heightChange != 0 ? #numbers.formatDecimal(heightChange, 1, 1) + '%' : '0%'} + ')'"
+                      >0%</small
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="measurement-value weight">
+                <i class="material-icons">monitor_weight</i>
+                <div class="value-info">
+                  <span class="label">현재 체중</span>
+                  <strong
+                    th:text="${latestRecord.weight != null ? latestRecord.weight + ' kg' : '정보 없음'}"
+                    >0 kg</strong
+                  >
+                  <div
+                    class="change-indicator"
+                    th:classappend="${weightDiff >= 0 ? 'positive' : 'negative'}"
+                  >
+                    <span
+                      th:text="${weightDiff != 0 ? #numbers.formatDecimal(weightDiff, 1, 1) + ' kg' : '변동 없음'}"
+                      >0 kg</span
+                    >
+                    <small
+                      th:text="'(' + ${weightChange != 0 ? #numbers.formatDecimal(weightChange, 1, 1) + '%' : '0%'} + ')'"
+                      >0%</small
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 측정 날짜 정보 -->
+            <div class="measurement-dates">
+              <div class="date-item latest">
+                <i class="material-icons">update</i>
+                <span>최근 측정일</span>
+                <strong
+                  th:text="${latestRecord?.createdAt != null ? #temporals.format(latestRecord.createdAt, 'yyyy-MM-dd') : '날짜 없음'}"
+                  >2024-01-01</strong
+                >
+              </div>
+              <div class="date-item first">
+                <i class="material-icons">event</i>
+                <span>첫 측정일</span>
+                <strong
+                  th:text="${firstRecord?.createdAt != null ? #temporals.format(firstRecord.createdAt, 'yyyy-MM-dd') : '날짜 없음'}"
+                  >2024-01-01</strong
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 데이터가 없을 때 -->
+        <div class="no-data" th:if="${#lists.isEmpty(heightWeightRecord)}">
+          <i class="material-icons">info</i>
+          <p>측정 정보가 없습니다.</p>
+        </div>
+
+        <!-- 차트 카드 -->
+        <div class="card chart-card">
+          <h2>신체 기록 변화</h2>
+          <div
+            class="chart-container"
+            th:if="${not #lists.isEmpty(heightWeightRecord)}"
+          >
+            <canvas id="recordChart"></canvas>
+          </div>
+          <div class="no-data" th:if="${#lists.isEmpty(heightWeightRecord)}">
+            <i class="material-icons">info</i>
+            <p>차트를 표시할 데이터가 없습니다.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script th:inline="javascript">
+      // 차트 데이터 설정
+      const records = [[${heightWeightRecord}]];
+      const dates = records.map(record => {
+        const date = new Date(record.createdAt);
+        return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+      });
+      const weights = records.map(record => record.weight);
+      const heights = records.map(record => record.height);
+
+      // 차트 생성
+      const ctx = document.getElementById('recordChart').getContext('2d');
+      new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: dates,
+              datasets: [{
+                  label: '체중 (kg)',
+                  data: weights,
+                  borderColor: '#2196F3',
+                  backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                  borderWidth: 2,
+                  tension: 0.4,
+                  fill: true,
+                  pointBackgroundColor: '#fff',
+                  pointBorderColor: '#2196F3',
+                  pointBorderWidth: 2,
+                  pointRadius: 4,
+                  pointHoverRadius: 6,
+              }, {
+                  label: '신장 (cm)',
+                  data: heights,
+                  borderColor: '#4CAF50',
+                  backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                  borderWidth: 2,
+                  tension: 0.4,
+                  fill: true,
+                  pointBackgroundColor: '#fff',
+                  pointBorderColor: '#4CAF50',
+                  pointBorderWidth: 2,
+                  pointRadius: 4,
+                  pointHoverRadius: 6,
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              animation: {
+                  duration: 2000,
+                  easing: 'easeOutQuart'
+              },
+              interaction: {
+                  mode: 'index',
+                  intersect: false,
+              },
+              plugins: {
+                  legend: {
+                      position: 'top',
+                      labels: {
+                          padding: 20,
+                          usePointStyle: true,
+                          font: {
+                              size: 13
+                          }
+                      }
+                  },
+                  tooltip: {
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      titleColor: '#666',
+                      titleFont: {
+                          size: 13
+                      },
+                      bodyColor: '#333',
+                      bodyFont: {
+                          size: 13
+                      },
+                      padding: 12,
+                      borderColor: 'rgba(0, 0, 0, 0.1)',
+                      borderWidth: 1,
+                      displayColors: true,
+                      usePointStyle: true
+                  }
+              },
+              scales: {
+                  x: {
+                      grid: {
+                          display: false
+                      },
+                      ticks: {
+                          font: {
+                              size: 12
+                          }
+                      }
+                  },
+                  y: {
+                      grid: {
+                          borderDash: [5, 5],
+                          drawBorder: false
+                      },
+                      ticks: {
+                          font: {
+                              size: 12
+                          }
+                      }
+                  }
+              }
+          }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,336 @@
+/* 기본 스타일 상속 */
+@import 'detail_item.css';
+
+/* 비교 컨테이너 스타일 */
+.comparison-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* 카드 공통 스타일 */
+.original-card,
+.edit-card {
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: fit-content; /* 내용에 맞게 높이 조정 */
+}
+
+/* 아이템 상세 정보 레이아웃 */
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+/* info-item 높이 조정 */
+.info-item {
+    padding: 20px;
+    background: var(--primary-light);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: auto; /* 내용에 맞게 높이 조정 */
+}
+
+/* 이미지 관련 스타일 */
+.info-item.image {
+    position: relative;
+    min-height: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 설명 영역 높이 조정 */
+.info-item.description {
+    display: flex;
+    flex-direction: column;
+}
+
+.description-content {
+    padding: 10px 5px;
+    line-height: 1.6;
+}
+
+/* 이미지 관련 스타일 */
+.info-item.image {
+    position: relative;
+    min-height: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 설명 영역 높이 조정 */
+.info-item.description {
+    flex: 0 1 auto; /* flex-grow를 0으로 설정하여 필요한 만큼만 공간 차지 */
+    display: flex;
+    flex-direction: column;
+}
+
+.description-content {
+    max-height: 300px; /* 최대 높이 설정 */
+    flex: 1; /* 컨테이너 높이에 맞춰 늘어나도록 설정 */
+    overflow-y: auto;
+}
+
+.image-preview {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-image {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+}
+
+.no-image {
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #666;
+}
+
+.no-image i {
+    font-size: 48px;
+    opacity: 0.5;
+}
+
+/* 수정 폼 스타일 */
+.edit-form input,
+.edit-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    margin-top: 8px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+.edit-form textarea {
+    height: 100%; /* 부모 높이에 맞춤 */
+    min-height: 150px;
+    resize: none; /* 수직 크기 조절 제거 */
+}
+
+/* 이미지 업로드 관련 스타일 */
+.image-upload {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.preview-container {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-container.has-image {
+    padding: 0;
+}
+
+.preview-container i {
+    font-size: 48px;
+    opacity: 0.5;
+}
+
+.preview-img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+}
+
+.form-group {
+    margin-top: 10px;
+}
+
+.form-group input[type="url"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="url"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+/* 이미지 업로드 관련 스타일 */
+.image-upload {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.preview-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-image {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    display: none;
+}
+
+.preview-image.active {
+    display: block;
+}
+
+.upload-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #666;
+    background: var(--background-color);
+    display: none;
+}
+
+.upload-placeholder.active {
+    display: flex;
+}
+
+.upload-placeholder i {
+    font-size: 48px;
+    opacity: 0.5;
+}
+
+.image-input {
+    display: none;
+}
+
+.upload-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+    background: var(--primary-dark);
+}
+
+/* 버튼 스타일 */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .comparison-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 애니메이션 효과 */
+.original-card,
+.edit-card {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

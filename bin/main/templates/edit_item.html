@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>물건 정보 수정</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232196F3' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 9.36-7 10.6-3.6-1.24-7-5.77-7-10.6V6.3l7-3.12zm-1 12.64l-4-4 1.41-1.41L11 13l6.29-6.29L18.7 8.12l-7.7 7.7z'/></svg>"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/edit_item.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo">
+        <a href="/" class="logo-link">
+          <i class="material-icons">dashboard</i>
+          <span class="logo-text">관리자 페이지</span>
+        </a>
+      </div>
+      <div class="admin-info">
+        <i class="material-icons">account_circle</i>
+        <span class="admin-name" th:text="${username + '님 안녕하세요.'}"
+          >관리자</span
+        >
+      </div>
+      <ul class="nav-links">
+        <form action="javascript:history.back()" method="GET">
+          <button type="submit" class="nav-button">
+            <i class="material-icons">arrow_back</i>
+            <span>돌아가기</span>
+          </button>
+        </form>
+      </ul>
+
+      <form action="/logout" method="POST" class="logout-form">
+        <button type="submit" class="logout-btn">
+          <i class="material-icons">logout</i>
+          <span>로그아웃</span>
+        </button>
+      </form>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1><i class="material-icons">edit</i>물건 정보 수정</h1>
+      </div>
+
+      <div class="comparison-container">
+        <!-- 원본 데이터 카드 -->
+        <div class="card original-card">
+          <h2>
+            <i class="material-icons">inventory_2</i>
+            <span>원본 정보</span>
+          </h2>
+          <div class="item-details">
+            <div class="info-item image">
+              <i class="material-icons">image</i>
+              <span>현재 이미지</span>
+              <div class="image-preview">
+                <img
+                  th:if="${item.img != null && !item.img.isEmpty()}"
+                  th:src="${item.img}"
+                  alt="현재 이미지"
+                  class="current-image"
+                />
+                <div
+                  th:if="${item.img == null || item.img.isEmpty()}"
+                  class="no-image"
+                >
+                  <i class="material-icons">image_not_supported</i>
+                  <span>이미지 없음</span>
+                </div>
+              </div>
+            </div>
+            <div class="info-item name">
+              <i class="material-icons">label</i>
+              <span>물건명</span>
+              <strong th:text="${item.name}">물건명</strong>
+            </div>
+            <div class="info-item price">
+              <i class="material-icons">attach_money</i>
+              <span>판매 가격</span>
+              <strong
+                th:text="${#numbers.formatDecimal(item.price, 0, 0) + ' 원'}"
+                >0 원</strong
+              >
+            </div>
+            <div class="info-item description">
+              <i class="material-icons">description</i>
+              <span>상세 설명</span>
+              <div class="description-content">
+                <p th:text="${item.description}">설명 없음</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 수정 폼 카드 -->
+        <div class="card edit-card">
+          <h2>
+            <i class="material-icons">edit_note</i>
+            <span>수정할 정보</span>
+          </h2>
+          <form
+            class="edit-form"
+            th:action="@{/edit/item/{id}(id=${item.id})}"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="item-details">
+              <div class="info-item image">
+                <i class="material-icons">image</i>
+                <span>이미지 수정</span>
+                <div class="image-upload">
+                  <div class="preview-container" id="imagePreview">
+                    <i class="material-icons">add_photo_alternate</i>
+                    <span>이미지 URL을 입력하세요</span>
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="url"
+                      id="img"
+                      name="img"
+                      th:value="${item.img}"
+                      placeholder="이미지 URL을 입력하세요"
+                      onchange="previewImage(this)"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="info-item name">
+                <i class="material-icons">label</i>
+                <span>물건명</span>
+                <input
+                  type="text"
+                  name="name"
+                  th:value="${item.name}"
+                  required
+                />
+              </div>
+              <div class="info-item price">
+                <i class="material-icons">attach_money</i>
+                <span>판매 가격</span>
+                <input
+                  type="number"
+                  name="price"
+                  th:value="${item.price}"
+                  required
+                />
+              </div>
+              <div class="info-item description">
+                <i class="material-icons">description</i>
+                <span>상세 설명</span>
+                <textarea
+                  name="description"
+                  th:text="${item.description}"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="material-icons">save</i>
+                저장하기
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="history.back()"
+              >
+                <i class="material-icons">close</i>
+                취소하기
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <!-- 이미지 미리보기 스크립트 수정 -->
+    <script>
+      function previewImage(input) {
+        const preview = document.getElementById("imagePreview");
+        const url = input.value;
+
+        if (url) {
+          preview.innerHTML = `<img src="${url}" alt="Preview" class="preview-img" onerror="handleImageError(this)"/>`;
+          preview.classList.add("has-image");
+        } else {
+          preview.innerHTML = `
+            <i class="material-icons">add_photo_alternate</i>
+            <span>이미지 URL을 입력하세요</span>
+          `;
+          preview.classList.remove("has-image");
+        }
+      }
+
+      function handleImageError(img) {
+        img.parentElement.innerHTML = `
+          <i class="material-icons">error</i>
+          <span>이미지를 불러올 수 없습니다</span>
+        `;
+      }
+
+      // 초기 이미지 미리보기 설정
+      window.onload = function () {
+        const imgInput = document.getElementById("img");
+        if (imgInput.value) {
+          previewImage(imgInput);
+        }
+      };
+    </script>
+  </body>
+</html>
